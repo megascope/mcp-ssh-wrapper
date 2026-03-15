@@ -10,8 +10,12 @@ from mcp_ssh_wrapper.ssh_wrapper import execute_ssh_command
 
 
 INSTRUCTIONS = (
-    "Execute commands on remote hosts by invoking the local ssh binary. "
-    "Use the host environment's existing SSH config, identities, agent, and host key policy."
+    "Use this server when the user asks to run a shell command on a remote host over SSH. "
+    "Call the execute_command tool with the target host alias or user@host in `host` and the exact "
+    "remote shell command in `command`. This server wraps the local ssh binary only and relies on "
+    "the host environment's existing SSH config, identities, agent, and host key policy. "
+    "It is non-interactive: if SSH would require a password prompt or host key confirmation, "
+    "the command will fail and return stderr and a non-zero exit code."
 )
 
 LOGGER = logging.getLogger(__name__)
@@ -35,7 +39,7 @@ def build_server(host: str = "127.0.0.1", port: int = 8000, mount_path: str = "/
 
     @mcp.tool()
     def execute_command(host: str, command: str, timeout_seconds: int = 0) -> dict[str, object]:
-        """Execute a command on a remote host through the local ssh binary."""
+        """Run a shell command on a remote host over SSH and return stdout, stderr, and exit_code."""
         return execute_ssh_command(
             host=host,
             command=command,
